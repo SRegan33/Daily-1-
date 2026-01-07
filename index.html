@@ -474,6 +474,10 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
+        console.log('Firebase initialized successfully');
+        console.log('Auth:', auth);
+        console.log('Provider:', provider);
+
         // Display today's date
         const dateDisplay = document.getElementById('dateDisplay');
         const today = new Date();
@@ -485,7 +489,9 @@
 
         // Firebase Auth State Observer
         onAuthStateChanged(auth, async (user) => {
+            console.log('Auth state changed:', user ? 'User signed in' : 'User signed out');
             if (user) {
+                console.log('User details:', user.email, user.displayName);
                 // User is signed in
                 currentUser = {
                     id: user.uid,
@@ -510,6 +516,7 @@
                 }, 500);
             } else {
                 // User is signed out
+                console.log('No user signed in, showing auth screen');
                 currentUser = null;
                 showAuthInterface();
             }
@@ -566,11 +573,16 @@
 
         // Google Sign In
         async function signInWithGoogle() {
+            console.log('Sign in button clicked');
             try {
-                await signInWithPopup(auth, provider);
+                console.log('Attempting sign in with popup...');
+                const result = await signInWithPopup(auth, provider);
+                console.log('Sign in successful:', result.user.email);
             } catch (error) {
                 console.error('Error signing in:', error);
-                alert('Error signing in. Please try again.');
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                alert('Error signing in: ' + error.message);
             }
         }
 
